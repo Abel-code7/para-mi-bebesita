@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mi Vida 💖</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:radial-gradient(circle,#2b0033,#0d001a);
+color:white;
+overflow:hidden;
+transition:0.5s;
+}
+
+body.rosado{
+background:radial-gradient(circle,#ff99cc,#ff4da6);
+}
+
+.lock{
+position:fixed;
+inset:0;
+background:#0d001a;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:10;
+}
+
+.lock button{
+margin-top:20px;
+padding:12px 25px;
+border:none;
+border-radius:25px;
+background:#ff4da6;
+color:white;
+font-size:16px;
+}
+
+.app{
+display:none;
+width:92%;
+max-width:390px;
+padding:20px;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+box-shadow:0 0 30px rgba(255,0,150,0.5);
+text-align:center;
+max-height:90vh;
+overflow-y:auto;
+}
+
+.nombre{
+font-size:18px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.section{
+margin-top:15px;
+font-size:13px;
+}
+
+.boton{
+margin-top:10px;
+padding:8px 16px;
+border:none;
+border-radius:20px;
+background:#ff4da6;
+color:white;
+font-size:13px;
+}
+
+.galeria{
+display:flex;
+gap:8px;
+overflow-x:auto;
+margin-top:10px;
+}
+
+.galeria img{
+width:80px;
+height:80px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.anillo{
+font-size:40px;
+animation:latido 1.5s infinite;
+}
+
+@keyframes latido{
+0%{transform:scale(1);}
+50%{transform:scale(1.2);}
+100%{transform:scale(1);}
+}
+
+.heart{
+position:fixed;
+color:#ff4da6;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(100vh);
+opacity:0;
+}
+}
+</style>
+</head>
+<body>
+
+<!-- BLOQUEO -->
+<div class="lock" id="lock">
+<h2>Acceso exclusivo 💖</h2>
+<p>Toca para entrar</p>
+<button onclick="desbloquear()">Entrar 👆</button>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+<div class="nombre">Karen Nicol Morales Barrera 💖</div>
+
+<div class="section">
+Te amo mi niña hermosa &lt;3
+</div>
+
+<div class="section" id="contador"></div>
+
+<div class="section">
+🎂 Cumpleaños:
+<div id="cumple"></div>
+</div>
+
+<div class="section">
+📸 Nuestras fotos:
+<input type="file" accept="image/*" onchange="guardarFoto(event)">
+<div class="galeria" id="galeria"></div>
+</div>
+
+<div class="section anillo">💍</div>
+
+<button class="boton" onclick="propuesta()">
+Por siempre tú y yo mi vida 💕
+</button>
+
+<button class="boton" onclick="modo()">
+Cambiar modo 🌙
+</button>
+
+<button class="boton" onclick="secreto()">
+Mensaje secreto 🔑
+</button>
+
+</div>
+
+<!-- Música -->
+<iframe width="0" height="0"
+src="https://www.youtube.com/embed/TlrNxJqODBc?autoplay=1&loop=1&playlist=TlrNxJqODBc"
+frameborder="0"
+allow="autoplay">
+</iframe>
+
+<script>
+
+// desbloquear
+function desbloquear(){
+document.getElementById("lock").style.display="none";
+document.getElementById("app").style.display="block";
+navigator.vibrate(200);
+}
+
+// contador desde 07/01/2026
+const fechaInicio=new Date("2026-01-07T00:00:00");
+setInterval(()=>{
+const ahora=new Date();
+const diff=ahora-fechaInicio;
+const dias=Math.floor(diff/(1000*60*60*24));
+document.getElementById("contador").innerText=
+"Juntos por "+dias+" días 💞";
+},1000);
+
+// cumpleaños (cámbialo si quieres)
+const cumple=new Date("2026-08-15T00:00:00");
+setInterval(()=>{
+const ahora=new Date();
+const diff=cumple-ahora;
+if(diff>0){
+const dias=Math.floor(diff/(1000*60*60*24));
+document.getElementById("cumple").innerText=dias+" días restantes 🎉";
+}else{
+document.getElementById("cumple").innerText="Feliz cumpleaños mi amor 🎂💖";
+navigator.vibrate([200,100,200]);
+}
+},1000);
+
+// corazones
+setInterval(()=>{
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="❤";
+heart.style.left=Math.random()*100+"vw";
+heart.style.animationDuration=(Math.random()*3+2)+"s";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),5000);
+},500);
+
+// fotos
+function guardarFoto(event){
+const file=event.target.files[0];
+const reader=new FileReader();
+reader.onload=function(e){
+let fotos=JSON.parse(localStorage.getItem("fotos")||"[]");
+fotos.push(e.target.result);
+localStorage.setItem("fotos",JSON.stringify(fotos));
+mostrarFotos();
+}
+reader.readAsDataURL(file);
+}
+
+function mostrarFotos(){
+let fotos=JSON.parse(localStorage.getItem("fotos")||"[]");
+const galeria=document.getElementById("galeria");
+galeria.innerHTML="";
+fotos.forEach(f=>{
+let img=document.createElement("img");
+img.src=f;
+galeria.appendChild(img);
+});
+}
+mostrarFotos();
+
+// propuesta
+function propuesta(){
+navigator.vibrate([200,100,200]);
+alert("¿Quieres estar conmigo para siempre? 💍💕");
+}
+
+// modo
+function modo(){
+document.body.classList.toggle("rosado");
+}
+
+// secreto
+function secreto(){
+let clave=prompt("Ingresa la contraseña 💖");
+if(clave==="07/01/2026"){
+alert("Eres el amor de mi vida, mi futura esposa, madre de mis hijos y mi mujer para toda la vida 💍✨");
+navigator.vibrate([300,100,300]);
+}else{
+alert("Contraseña incorrecta como no te la sabes es xq no me amas💔");
+}
+}
+
+</script>
+
+</body>
+</html>
